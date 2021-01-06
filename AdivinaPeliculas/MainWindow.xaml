@@ -39,6 +39,8 @@
         <!-- BOTONES -->
 
         <Style TargetType="Button">
+            <Setter Property="Margin"
+                    Value="10" />
             <Setter Property="Effect">
                 <Setter.Value>
                     <DropShadowEffect />
@@ -70,6 +72,10 @@
 
         <Style TargetType="Image"
                x:Key="jugarGeneroImage">
+            <Setter Property="Width"
+                    Value="100" />
+            <Setter Property="Height"
+                    Value="100" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Path=Genero}"
                              Value="Comedia">
@@ -98,6 +104,85 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        
+        <!-- BOTONES CAMBIAR PELICULA -->
+
+        <Style TargetType="Button"
+               x:Key="cambiarPeliculaButton">
+            <Setter Property="FontFamily"
+                    Value="Marlett" />
+            <Setter Property="FontSize"
+                    Value="20" />
+            <Setter Property="Margin"
+                    Value="5,0" />
+        </Style>
+
+        <ControlTemplate x:Key="cambiarPeliculaButtonControlTemplate"
+                         TargetType="{x:Type Button}">
+            <Border x:Name="border"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    CornerRadius="20"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    Background="{TemplateBinding Background}"
+                    SnapsToDevicePixels="True">
+                <ContentPresenter x:Name="contentPresenter"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  Content="{TemplateBinding Content}"
+                                  ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                  Focusable="False"
+                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  Margin="{TemplateBinding Padding}"
+                                  RecognizesAccessKey="True"
+                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsDefaulted"
+                         Value="True">
+                    <Setter Property="BorderBrush"
+                            TargetName="border"
+                            Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                </Trigger>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="Background"
+                            TargetName="border"
+                            Value="#FFBEE6FD" />
+                    <Setter Property="BorderBrush"
+                            TargetName="border"
+                            Value="#FF3C7FB1" />
+                </Trigger>
+                <Trigger Property="IsPressed"
+                         Value="True">
+                    <Setter Property="Background"
+                            TargetName="border"
+                            Value="#FFC4E5F6" />
+                    <Setter Property="BorderBrush"
+                            TargetName="border"
+                            Value="#FF2C628B" />
+                </Trigger>
+                <Trigger Property="ToggleButton.IsChecked"
+                         Value="True">
+                    <Setter Property="Background"
+                            TargetName="border"
+                            Value="#FFBCDDEE" />
+                    <Setter Property="BorderBrush"
+                            TargetName="border"
+                            Value="#FF245A83" />
+                </Trigger>
+                <Trigger Property="IsEnabled"
+                         Value="False">
+                    <Setter Property="Background"
+                            TargetName="border"
+                            Value="#FFF4F4F4" />
+                    <Setter Property="BorderBrush"
+                            TargetName="border"
+                            Value="#FFADB2B5" />
+                    <Setter Property="Foreground"
+                            Value="#FF838383" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
 
     </Window.Resources>
     <Grid Background="Purple">
@@ -111,20 +196,21 @@
                                 Orientation="Horizontal"
                                 HorizontalAlignment="Center"
                                 Margin="5">
-                        <Button FontFamily="Marlett" FontSize="20" Content="3"
-                                Margin="5,0"></Button>
-                        <TextBlock FontSize="25" FontWeight="Bold">1/5</TextBlock>
-                        <Button FontFamily="Marlett"
-                                FontSize="20"
+                        <Button Style="{StaticResource cambiarPeliculaButton}"
+                                Content="3"
+                                Template="{DynamicResource cambiarPeliculaButtonControlTemplate}"></Button>
+                        <TextBlock FontSize="25"
+                                   FontWeight="Bold">1/5</TextBlock>
+                        <Button Style="{StaticResource cambiarPeliculaButton}"
                                 Content="4"
-                                Margin="5,0"></Button>
+                                Template="{DynamicResource cambiarPeliculaButtonControlTemplate}"></Button>
                     </StackPanel>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <DockPanel Grid.Column="0" 
+                        <DockPanel Grid.Column="0"
                                    Margin="10">
                             <TextBlock DockPanel.Dock="Top"
                                        Margin="0,0,0,5"
@@ -138,15 +224,46 @@
                             <StackPanel DockPanel.Dock="Bottom"
                                         HorizontalAlignment="Center">
                                 <Image Style="{StaticResource jugarGeneroImage}" />
-                                <TextBlock FontWeight="Bold">Género</TextBlock>
+                                <TextBlock FontWeight="Bold" HorizontalAlignment="Center">Género</TextBlock>
                             </StackPanel>
+                            <StackPanel DockPanel.Dock="Bottom"
+                                        Margin="5">
+                                <CheckBox FontWeight="Bold" Margin="0,5">Ver pista</CheckBox>
+                                <TextBlock Text="{Binding Path=Pista}"></TextBlock>
+                            </StackPanel>
+                            <StackPanel DockPanel.Dock="Bottom" Margin="5">
+                                <TextBlock FontWeight="Bold">Titulo de la película</TextBlock>
+                                <DockPanel>
+                                    <Button DockPanel.Dock="Right" Width="70">Validar</Button>
+                                    <TextBox Margin="0,10"></TextBox>
+                                </DockPanel>
+                            </StackPanel>
+                            <DockPanel DockPanel.Dock="Top" LastChildFill="True">
+                                <StackPanel DockPanel.Dock="Right"
+                                            VerticalAlignment="Center">
+                                    <Button >Nueva partida</Button>
+                                </StackPanel>
+                                <StackPanel Margin="10"
+                                            HorizontalAlignment="Center">
+                                    <TextBlock FontWeight="Bold">Puntuacion total</TextBlock>
+                                    <TextBox x:Name="puntuacionTextBox"
+                                             BorderThickness="2"
+                                             BorderBrush="Black"
+                                             Margin="0,5"
+                                             Width="150"
+                                             Height="80"
+                                             FontSize="50"
+                                             TextAlignment="Center">
+                                    </TextBox>
+                                </StackPanel>
+                            </DockPanel>
                         </DockPanel>
                     </Grid>
                 </DockPanel>
             </TabItem>
-            
+
             <!-- PESTAÑA GESTIONAR -->
-            
+
             <TabItem Header="Gestionar">
                 <Grid x:Name="gestionarGrid"
                       Style="{StaticResource gestionarGrid}"
@@ -162,9 +279,9 @@
                         <RowDefinition Height="40"></RowDefinition>
                         <RowDefinition Height="65"></RowDefinition>
                     </Grid.RowDefinitions>
-                    
+
                     <!-- LISTBOX -->
-                    
+
                     <ListBox Grid.Row="0"
                              Grid.Column="0"
                              Margin="10"
@@ -175,12 +292,13 @@
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Margin="5">
-                                    <Image Source="{Binding Path=Imagen, UpdateSourceTrigger=PropertyChanged}" 
-                                           Width="100" Height="150"
-                                           Stretch="UniformToFill"/>
-                                    <TextBlock Text="{Binding Path=Nombre, UpdateSourceTrigger=PropertyChanged}" 
+                                    <Image Source="{Binding Path=Imagen, UpdateSourceTrigger=PropertyChanged}"
+                                           Width="100"
+                                           Height="150"
+                                           Stretch="UniformToFill" />
+                                    <TextBlock Text="{Binding Path=Nombre, UpdateSourceTrigger=PropertyChanged}"
                                                HorizontalAlignment="Center"
-                                               FontWeight="Bold"/>
+                                               FontWeight="Bold" />
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -193,10 +311,12 @@
 
                     <!-- DATOS PELICULA -->
 
-                    <DockPanel Grid.Row="1" Grid.Column="0" Margin="10">
+                    <DockPanel Grid.Row="1"
+                               Grid.Column="0"
+                               Margin="10">
                         <TextBlock Margin="5,0"
                                    Width="115">Titulo de la película</TextBlock>
-                        <TextBox x:Name="tituloTextBox" 
+                        <TextBox x:Name="tituloTextBox"
                                  Text="{Binding Path=Nombre, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                     </DockPanel>
                     <DockPanel Grid.Row="2"
@@ -221,11 +341,17 @@
                         <TextBlock Margin="5,0"
                                    Width="115">Nivel de dificultad</TextBlock>
                         <StackPanel>
-                            <RadioButton x:Name="facilCheckBox" IsChecked="{Binding Path=Facil, UpdateSourceTrigger=PropertyChanged}" GroupName="dificultadGroupName">Fácil</RadioButton>
-                            <RadioButton x:Name="normalCheckBox" IsChecked="{Binding Path=Normal, UpdateSourceTrigger=PropertyChanged}" GroupName="dificultadGroupName">Normal</RadioButton>
-                            <RadioButton x:Name="dificilCheckBox" IsChecked="{Binding Path=Dificil, UpdateSourceTrigger=PropertyChanged}" GroupName="dificultadGroupName">Dificil</RadioButton>
+                            <RadioButton x:Name="facilCheckBox"
+                                         IsChecked="{Binding Path=Facil, UpdateSourceTrigger=PropertyChanged}"
+                                         GroupName="dificultadGroupName">Fácil</RadioButton>
+                            <RadioButton x:Name="normalCheckBox"
+                                         IsChecked="{Binding Path=Normal, UpdateSourceTrigger=PropertyChanged}"
+                                         GroupName="dificultadGroupName">Normal</RadioButton>
+                            <RadioButton x:Name="dificilCheckBox"
+                                         IsChecked="{Binding Path=Dificil, UpdateSourceTrigger=PropertyChanged}"
+                                         GroupName="dificultadGroupName">Dificil</RadioButton>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" 
+                        <StackPanel Orientation="Horizontal"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center">
                             <TextBlock VerticalAlignment="Center">Género</TextBlock>
@@ -237,34 +363,25 @@
                     </DockPanel>
 
                     <!-- BOTONES DERECHA -->
-                    
-                    <DockPanel Grid.Row="0" Grid.Column="1" 
+
+                    <DockPanel Grid.Row="0"
+                               Grid.Column="1"
                                LastChildFill="False">
                         <StackPanel DockPanel.Dock="Top">
-                            <Button x:Name="cargarButton"
-                                    Margin="10"
-                                    Click="cargarButton_Click">Cargar de JSON
+                            <Button Click="cargarButton_Click">Cargar de JSON
                             </Button>
-                            <Button x:Name="guardarButton"
-                                    Margin="10"
-                                    Click="guardarButton_Click">Guardar en JSON
+                            <Button Click="guardarButton_Click">Guardar en JSON
                             </Button>
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Bottom">
-                            <Button x:Name="eliminarButton"
-                                    Margin="10"
-                                    Click="eliminarButton_Click">Eliminar película
+                            <Button Click="eliminarButton_Click">Eliminar película
                             </Button>
-                            <Button x:Name="añadirButton"
-                                    Margin="10"
-                                    Click="añadirButton_Click">Añadir película
+                            <Button Click="añadirButton_Click">Añadir película
                             </Button>
                         </StackPanel>
                     </DockPanel>
-                    <Button x:Name="examinarButton"
-                            Grid.Column="1"
+                    <Button Grid.Column="1"
                             Grid.Row="3"
-                            Margin="10"
                             Click="examinarButton_Click">Examinar
                     </Button>
                 </Grid>
