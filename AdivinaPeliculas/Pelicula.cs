@@ -7,9 +7,7 @@ namespace AdivinaPeliculas
         private string nombre;
         private string pista;
         private string imagen;
-        private bool facil;
-        private bool normal;
-        private bool dificil;
+        private string dificultad;
         private string genero;
 
 
@@ -49,39 +47,15 @@ namespace AdivinaPeliculas
                 }
             }
         }
-        public bool Facil
+        public string Dificultad
         {
-            get => facil;
+            get => dificultad;
             set
             {
-                if (facil != value)
+                if (dificultad != value)
                 {
-                    facil = value;
-                    NotifyPropetyChanged("Facil");
-                }
-            }
-        }
-        public bool Normal
-        {
-            get => normal;
-            set
-            {
-                if (normal != value)
-                {
-                    normal = value;
-                    NotifyPropetyChanged("Normal");
-                }
-            }
-        }
-        public bool Dificil
-        {
-            get => dificil;
-            set
-            {
-                if (dificil != value)
-                {
-                    dificil = value;
-                    NotifyPropetyChanged("Dificil");
+                    dificultad = value;
+                    NotifyPropetyChanged("Dificultad");
                 }
             }
         }
@@ -101,19 +75,17 @@ namespace AdivinaPeliculas
         public Pelicula()
         {
             Nombre = "Nueva Pelicula";
-            Facil = true;
+            Dificultad = "Facil";
             Genero = "Comedia";
         }
 
         public Pelicula(string nombre, string pista, string imagen, 
-            bool facil, bool normal, bool dificil, string genero)
+            string dificultad, string genero)
         {
             Nombre = nombre;
             Pista = pista;
             Imagen = imagen;
-            Facil = facil;
-            Normal = normal;
-            Dificil = dificil;
+            Dificultad = dificultad;
             Genero = genero;
         }
 

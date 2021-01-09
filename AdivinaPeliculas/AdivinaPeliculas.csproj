@@ -105,9 +105,7 @@
   <ItemGroup>
     <Resource Include="128.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Images\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Icons\128.ico" />
     <Resource Include="Icons\accion.png" />
@@ -115,6 +113,15 @@
     <Resource Include="Icons\drama.png" />
     <Resource Include="Icons\scifi.png" />
     <Resource Include="Icons\terror.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\anillos.jpg" />
+    <Resource Include="Images\regreso.jpg" />
+    <Resource Include="Images\riddick.jpg" />
+    <Resource Include="Images\salvarryan.jpg" />
+    <Resource Include="Images\saw.jpg" />
+    <Resource Include="Images\valerian.jpg" />
+    <Resource Include="Images\yojimbo.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
