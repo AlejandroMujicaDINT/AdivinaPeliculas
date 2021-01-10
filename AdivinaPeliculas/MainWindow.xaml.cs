@@ -6,6 +6,8 @@ using System.Windows;
 
 using Newtonsoft.Json;
 using Microsoft.Win32;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace AdivinaPeliculas
 {
@@ -129,6 +131,86 @@ namespace AdivinaPeliculas
                 }
             } while (peliculasAleatorias.Count != 5);
             Indice = 0;
+            PeliculaActual();
+            HabilitarBotones();
+        }
+
+        private void cambiarPeliculaButton_Click(object sender, RoutedEventArgs e)
+        {
+            string flecha = ((Button)sender).Tag.ToString();
+
+            if (flecha == "-1" && jugarDockPanel.DataContext != peliculasAleatorias[0])
+            {
+                Indice--;
+                PeliculaActual();
+                LimpiarDatos();
+            }
+            else if (flecha == "1" && jugarDockPanel.DataContext != peliculasAleatorias[peliculasAleatorias.Count - 1])
+            {
+                Indice++;
+                PeliculaActual();
+                LimpiarDatos();
+            }
+        }
+
+        private void validarButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (respuestaTextBox.Text.Equals(peliculasAleatorias[Indice].Nombre, StringComparison.CurrentCultureIgnoreCase))
+            {
+                respuestaTextBox.Background = Brushes.Green;
+                MessageBox.Show("Respuesta Correcta!");
+                SumarPuntos();
+            }
+            else
+            {
+                respuestaTextBox.Background = Brushes.Red;
+                MessageBox.Show("Respuesta Incorrecta!");
+            }
+        }
+
+        private void SumarPuntos()
+        {
+            string dificultad = peliculasAleatorias[Indice].Dificultad;
+            int puntuacion = int.Parse(puntuacionTextBox.Text);
+            if (dificultad == "Facil")
+            {
+                if (pistaCheckBox.IsChecked == true)
+                    puntuacionTextBox.Text = (puntuacion + 5).ToString();
+                else
+                    puntuacionTextBox.Text = (puntuacion + 10).ToString();
+            }
+            else if(dificultad == "Normal")
+            {
+                if (pistaCheckBox.IsChecked == true)
+                    puntuacionTextBox.Text = (puntuacion + 15).ToString();
+                else
+                    puntuacionTextBox.Text = (puntuacion + 30).ToString();
+            }
+            else
+            {
+                if (pistaCheckBox.IsChecked == true)
+                    puntuacionTextBox.Text = (puntuacion + 25).ToString();
+                else
+                    puntuacionTextBox.Text = (puntuacion + 50).ToString();
+            }
+        }
+
+        private void PeliculaActual()
+        {
+            peliculaActualTextBlock.Text = (Indice + 1) + "/" + peliculasAleatorias.Count;
+        }
+
+        private void HabilitarBotones()
+        {
+            retrocederButton.IsEnabled = true;
+            avanzarButton.IsEnabled = true;
+            validarButton.IsEnabled = true;
+        }
+
+        private void LimpiarDatos()
+        {
+            respuestaTextBox.Text = "";
+            respuestaTextBox.Background = Brushes.White;
         }
     }
 }

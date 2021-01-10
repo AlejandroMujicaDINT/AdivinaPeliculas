@@ -10,7 +10,6 @@ namespace AdivinaPeliculas
         private string dificultad;
         private string genero;
 
-
         public string Nombre
         {
             get => nombre;

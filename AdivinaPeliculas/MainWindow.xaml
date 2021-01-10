@@ -65,7 +65,7 @@
                     Value="{Binding Path=Imagen}" />
             <Setter Property="Effect">
                 <Setter.Value>
-                    <BlurEffect Radius="20" />
+                    <BlurEffect Radius="30" />
                 </Setter.Value>
             </Setter>
         </Style>
@@ -111,12 +111,16 @@
 
         <Style TargetType="Button"
                x:Key="cambiarPeliculaButton">
+            <Setter Property="IsEnabled"
+                    Value="False" />
             <Setter Property="FontFamily"
                     Value="Marlett" />
             <Setter Property="FontSize"
                     Value="20" />
             <Setter Property="Margin"
                     Value="5,0" />
+            <EventSetter Event="Click"
+                         Handler="cambiarPeliculaButton_Click" />
         </Style>
 
         <ControlTemplate x:Key="cambiarPeliculaButtonControlTemplate"
@@ -229,6 +233,42 @@
             </Style.Triggers>
         </Style>
 
+        <!-- TEXTBLOCK PISTA -->
+
+        <Style TargetType="TextBlock"
+               x:Key="pistaText"
+               BasedOn="{StaticResource {x:Type TextBlock}}">
+            <Setter Property="HorizontalAlignment"
+                    Value="Center" />
+            <Setter Property="Visibility"
+                    Value="Hidden" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=pistaCheckBox, Path=IsChecked}"
+                             Value="True">
+                    <Setter Property="Visibility"
+                            Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        
+        <!-- CHECKBOX PISTA -->
+
+        <Style TargetType="CheckBox"
+               x:Key="pistaCheckBox">
+            <Setter Property="FontWeight"
+                    Value="Bold" />
+            <Setter Property="Margin"
+                    Value="0,5" />
+            <Style.Triggers>
+                <Trigger Property="IsChecked"
+                         Value="True">
+                    <Setter Property="IsEnabled"
+                            Value="False" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+               
+
     </Window.Resources>
     <Grid Background="Purple">
         <TabControl Margin="10">
@@ -238,15 +278,22 @@
             <TabItem Header="Jugar">
                 <DockPanel x:Name="jugarDockPanel"
                            Style="{StaticResource jugarGestionarBackground}">
+
+                    <!-- BOTONES CAMBIAR PELICULA -->
+
                     <StackPanel DockPanel.Dock="Bottom"
                                 Orientation="Horizontal"
                                 HorizontalAlignment="Center"
                                 Margin="5">
-                        <Button Style="{StaticResource cambiarPeliculaButton}"
+                        <Button x:Name="retrocederButton"
+                                Tag="-1"
+                                Style="{StaticResource cambiarPeliculaButton}"
                                 Content="3"
                                 Template="{DynamicResource cambiarPeliculaButtonControlTemplate}"></Button>
-                        <TextBlock FontSize="25">1/5</TextBlock>
-                        <Button Style="{StaticResource cambiarPeliculaButton}"
+                        <TextBlock x:Name="peliculaActualTextBlock" FontSize="25">1/5</TextBlock>
+                        <Button x:Name="avanzarButton"
+                                Tag="1"
+                                Style="{StaticResource cambiarPeliculaButton}"
                                 Content="4"
                                 Template="{DynamicResource cambiarPeliculaButtonControlTemplate}"></Button>
                     </StackPanel>
@@ -255,56 +302,88 @@
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
+
+                        <!-- IMAGEN PELICULA -->
+
                         <DockPanel Grid.Column="0"
                                    Margin="10">
                             <TextBlock DockPanel.Dock="Top"
                                        Margin="0,0,0,5"
-                                       FontSize="15">Cartel de la película</TextBlock>
+                                       FontSize="15"
+                                       HorizontalAlignment="Center">Cartel de la película</TextBlock>
                             <Image x:Name="juegoImage"
                                    Style="{StaticResource juegoImage}" />
                         </DockPanel>
+
+                        <!-- DATOS JUEGO -->
+
                         <DockPanel Grid.Column="1"
                                    LastChildFill="False">
+
+                            <!-- GENERO PELICULA -->
+
                             <StackPanel DockPanel.Dock="Bottom"
                                         HorizontalAlignment="Center">
                                 <Image Style="{StaticResource jugarGeneroImage}" />
                                 <TextBlock Style="{StaticResource generoText}"></TextBlock>
                             </StackPanel>
+
+                            <!-- PISTA PELICULA -->
+
                             <StackPanel DockPanel.Dock="Bottom"
                                         Margin="5">
-                                <CheckBox Margin="0,5"
-                                          FontWeight="Bold">Ver pista</CheckBox>
-                                <TextBlock Text="{Binding Path=Pista}"
-                                           HorizontalAlignment="Center"></TextBlock>
+                                <CheckBox x:Name="pistaCheckBox"
+                                          ToolTip="Si usas la pista solo conseguiras la mitad de puntos."
+                                          Style="{StaticResource pistaCheckBox}">Ver pista</CheckBox>
+                                <TextBlock x:Name="pistaTextBlock"
+                                           Text="{Binding Path=Pista}"
+                                           Style="{StaticResource pistaText}"></TextBlock>
                             </StackPanel>
+
+                            <!-- TITULO PELICULA -->
+
                             <StackPanel DockPanel.Dock="Bottom"
                                         Margin="5">
                                 <TextBlock>Titulo de la película</TextBlock>
                                 <DockPanel>
-                                    <Button DockPanel.Dock="Right"
-                                            Width="70">Validar</Button>
-                                    <TextBox Margin="0,10"></TextBox>
+                                    <Button x:Name="validarButton"
+                                            IsEnabled="False"
+                                            DockPanel.Dock="Right"
+                                            Width="70"
+                                            Click="validarButton_Click">Validar</Button>
+                                    <TextBox Margin="0,10"
+                                             x:Name="respuestaTextBox"></TextBox>
                                 </DockPanel>
                             </StackPanel>
-                            <DockPanel DockPanel.Dock="Top"
-                                       LastChildFill="True">
+
+                            <!-- PARTIDA -->
+
+                            <DockPanel DockPanel.Dock="Top">
                                 <StackPanel DockPanel.Dock="Right"
                                             VerticalAlignment="Center">
                                     <Button x:Name="nuevaPartidaButton"
                                             Click="nuevaPartidaButton_Click">Nueva partida</Button>
                                 </StackPanel>
                                 <StackPanel Margin="10"
+                                            DockPanel.Dock="Right"
                                             HorizontalAlignment="Center">
                                     <TextBlock>Puntuacion total</TextBlock>
                                     <TextBox x:Name="puntuacionTextBox"
+                                             Text="0"
                                              BorderThickness="2"
                                              BorderBrush="Black"
+                                             IsReadOnly="True"
                                              Margin="0,5"
                                              Width="150"
                                              Height="80"
                                              FontSize="50"
                                              TextAlignment="Center">
                                     </TextBox>
+                                </StackPanel>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Margin="10">Facil = 10 puntos</TextBlock>
+                                    <TextBlock Margin="10">Normal = 30 puntos</TextBlock>
+                                    <TextBlock Margin="10">Dificil = 50 puntos</TextBlock>
                                 </StackPanel>
                             </DockPanel>
                         </DockPanel>
@@ -351,6 +430,7 @@
                                         <TextBlock Text="{Binding Path=Nombre, UpdateSourceTrigger=PropertyChanged}"
                                                    HorizontalAlignment="Center"
                                                    TextWrapping="Wrap"
+                                                   FontWeight="Bold"
                                                    TextAlignment="Center" />
                                     </StackPanel>
                                 </DataTemplate>

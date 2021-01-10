@@ -105,7 +105,9 @@
   <ItemGroup>
     <Resource Include="128.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\aceventura.jpg" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\128.ico" />
     <Resource Include="Icons\accion.png" />
