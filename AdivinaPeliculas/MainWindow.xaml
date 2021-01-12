@@ -65,9 +65,19 @@
                     Value="{Binding Path=Imagen}" />
             <Setter Property="Effect">
                 <Setter.Value>
-                    <BlurEffect Radius="30" />
+                    <BlurEffect Radius="50" />
                 </Setter.Value>
             </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=respuestaTextBox, Path=Background}"
+                             Value="Green">
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <BlurEffect Radius="0" />
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
 
         <!-- IMAGEN GENERO JUGAR -->
@@ -250,11 +260,13 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        
+
         <!-- CHECKBOX PISTA -->
 
         <Style TargetType="CheckBox"
                x:Key="pistaCheckBox">
+            <Setter Property="IsEnabled"
+                    Value="False" />
             <Setter Property="FontWeight"
                     Value="Bold" />
             <Setter Property="Margin"
@@ -352,6 +364,8 @@
                                             Width="70"
                                             Click="validarButton_Click">Validar</Button>
                                     <TextBox Margin="0,10"
+                                             IsEnabled="False"
+                                             FontWeight="Bold"
                                              x:Name="respuestaTextBox"></TextBox>
                                 </DockPanel>
                             </StackPanel>
@@ -365,7 +379,6 @@
                                             Click="nuevaPartidaButton_Click">Nueva partida</Button>
                                 </StackPanel>
                                 <StackPanel Margin="10"
-                                            DockPanel.Dock="Right"
                                             HorizontalAlignment="Center">
                                     <TextBlock>Puntuacion total</TextBlock>
                                     <TextBox x:Name="puntuacionTextBox"
@@ -374,7 +387,7 @@
                                              BorderBrush="Black"
                                              IsReadOnly="True"
                                              Margin="0,5"
-                                             Width="150"
+                                             Width="160"
                                              Height="80"
                                              FontSize="50"
                                              TextAlignment="Center">
@@ -424,8 +437,8 @@
                                     <StackPanel Margin="5"
                                                 Width="150">
                                         <Image Source="{Binding Path=Imagen, UpdateSourceTrigger=PropertyChanged}"
-                                               Width="120"
-                                               Height="190"
+                                               Width="150"
+                                               Height="220"
                                                Stretch="UniformToFill" />
                                         <TextBlock Text="{Binding Path=Nombre, UpdateSourceTrigger=PropertyChanged}"
                                                    HorizontalAlignment="Center"

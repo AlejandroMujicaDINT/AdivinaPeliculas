@@ -106,9 +106,6 @@
     <Resource Include="128.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\aceventura.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Icons\128.ico" />
     <Resource Include="Icons\accion.png" />
     <Resource Include="Icons\comedia.png" />
@@ -124,6 +121,24 @@
     <Resource Include="Images\saw.jpg" />
     <Resource Include="Images\valerian.jpg" />
     <Resource Include="Images\yojimbo.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\aceventura.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\trainspotting.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\jurassicpark.jpg" />
+    <Resource Include="Images\laberinto.jpg" />
+    <Resource Include="Images\megamind.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\malditosbastardos.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\movidaRoxbury.jpg" />
+    <Resource Include="Images\policestory.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

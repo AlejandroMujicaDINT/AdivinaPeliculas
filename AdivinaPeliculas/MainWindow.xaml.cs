@@ -17,9 +17,11 @@ namespace AdivinaPeliculas
     public partial class MainWindow : Window
     {
         ObservableCollection<Pelicula> listaPeliculas;
+        ObservableCollection<Pelicula> peliculasAleatorias;
         List<string> listaGenerosComboBox;
         List<string> listaDificultadComboBox;
-        List<Pelicula> peliculasAleatorias;
+        List<bool> guardarPistas;
+        List<string> guardarRespuestas;
         private string archivoJson;
         private string rutaImagenes = "..\\images\\";
         private int indice;
@@ -58,7 +60,7 @@ namespace AdivinaPeliculas
             if (saveFileDialog.ShowDialog() == true)
                 File.WriteAllText(saveFileDialog.FileName, peliculasJson);
             else
-                MessageBox.Show("No has selecccionado archivo para guardar.");
+                MessageBox.Show("No has selecccionado archivo para guardar.","Información",MessageBoxButton.OK,MessageBoxImage.Information);
         }
 
         private void cargarButton_Click(object sender, RoutedEventArgs e)
@@ -72,7 +74,7 @@ namespace AdivinaPeliculas
                 cargarPeliculas(archivoJson);
             }
             else
-                MessageBox.Show("No has selecccionado archivo para cargar.");
+                MessageBox.Show("No has selecccionado archivo para cargar.","Información", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void cargarPeliculas(String archivo)
@@ -93,25 +95,27 @@ namespace AdivinaPeliculas
             }
             catch (Exception)
             {
-                MessageBox.Show("Debes elegir un archivo Json.");
+                MessageBox.Show("Debes elegir un archivo Json.", "Archivo incorrecto", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void eliminarButton_Click(object sender, RoutedEventArgs e)
         {
             listaPeliculas.Remove((Pelicula)PeliculasListBox.SelectedItem);
-            MessageBox.Show("Película eliminada.");
+            MessageBox.Show("Película eliminada con éxito.","Información", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void añadirButton_Click(object sender, RoutedEventArgs e)
         {
             listaPeliculas.Add(new Pelicula());
-            MessageBox.Show("Nueva película lista para editar.");
+            MessageBox.Show("Nueva película lista para editar.","Información", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void examinarButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
+            string ruta = Directory.GetCurrentDirectory();
+            openFileDialog.InitialDirectory = ruta.Replace("\\bin\\Debug",rutaImagenes);
             openFileDialog.Filter = "Image files (*.png;*.jpg)|*.png;*.jpg|All files (*.*)|*.*";
             if (openFileDialog.ShowDialog() == true)
                 imagenTextBox.Text = rutaImagenes+openFileDialog.SafeFileName;
@@ -119,37 +123,52 @@ namespace AdivinaPeliculas
 
         private void nuevaPartidaButton_Click(object sender, RoutedEventArgs e)
         {
-            Random rng = new Random();
-            Pelicula peliculaRandom;
-            peliculasAleatorias = new List<Pelicula>();
-            do
+            puntuacionTextBox.Text = "0";
+            if (listaPeliculas.Count >= 5)
             {
-                peliculaRandom = listaPeliculas[rng.Next(0, listaPeliculas.Count)];
-                if(!peliculasAleatorias.Contains(peliculaRandom))
+                Random rng = new Random();
+                Pelicula peliculaRandom;
+                peliculasAleatorias = new ObservableCollection<Pelicula>();
+                guardarPistas = new List<bool>();
+                guardarRespuestas = new List<string>();
+                do
                 {
-                    peliculasAleatorias.Add(peliculaRandom);
-                }
-            } while (peliculasAleatorias.Count != 5);
-            Indice = 0;
-            PeliculaActual();
-            HabilitarBotones();
+                    peliculaRandom = listaPeliculas[rng.Next(0, listaPeliculas.Count)];
+                    if (!peliculasAleatorias.Contains(peliculaRandom))
+                    {
+                        peliculasAleatorias.Add(peliculaRandom);
+                        guardarPistas.Add(false);
+                        guardarRespuestas.Add("");
+                    }
+                } while (peliculasAleatorias.Count != 5);
+                Indice = 0;
+                PeliculaActual();
+                HabilitarBotones();
+                ComprobarDatos();
+                MessageBox.Show("Empezando nueva partida.", "Inicio de partida", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Necesitas al menos 5 películas para poder jugar.", "Faltan películas", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void cambiarPeliculaButton_Click(object sender, RoutedEventArgs e)
         {
             string flecha = ((Button)sender).Tag.ToString();
+            GuardarDatos();
 
             if (flecha == "-1" && jugarDockPanel.DataContext != peliculasAleatorias[0])
             {
                 Indice--;
                 PeliculaActual();
-                LimpiarDatos();
+                ComprobarDatos();
             }
             else if (flecha == "1" && jugarDockPanel.DataContext != peliculasAleatorias[peliculasAleatorias.Count - 1])
             {
                 Indice++;
                 PeliculaActual();
-                LimpiarDatos();
+                ComprobarDatos();
             }
         }
 
@@ -157,14 +176,16 @@ namespace AdivinaPeliculas
         {
             if (respuestaTextBox.Text.Equals(peliculasAleatorias[Indice].Nombre, StringComparison.CurrentCultureIgnoreCase))
             {
-                respuestaTextBox.Background = Brushes.Green;
-                MessageBox.Show("Respuesta Correcta!");
+                GuardarDatos();
+                ComprobarDatos();
+                MessageBox.Show("Respuesta Correcta!", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                 SumarPuntos();
             }
-            else
+            else if(respuestaTextBox.Text != "")
             {
                 respuestaTextBox.Background = Brushes.Red;
-                MessageBox.Show("Respuesta Incorrecta!");
+                respuestaTextBox.Foreground = Brushes.White;
+                MessageBox.Show("Respuesta Incorrecta!", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -205,12 +226,39 @@ namespace AdivinaPeliculas
             retrocederButton.IsEnabled = true;
             avanzarButton.IsEnabled = true;
             validarButton.IsEnabled = true;
+            pistaCheckBox.IsEnabled = true;
+            respuestaTextBox.IsEnabled = true;
         }
 
-        private void LimpiarDatos()
+        private void GuardarDatos()
         {
-            respuestaTextBox.Text = "";
-            respuestaTextBox.Background = Brushes.White;
+            if (pistaCheckBox.IsChecked==true)
+            {
+                guardarPistas[Indice] = true;
+            }
+            guardarRespuestas[Indice] = respuestaTextBox.Text;
+        }
+
+        private void ComprobarDatos()
+        {
+            pistaCheckBox.IsChecked = guardarPistas[Indice];
+            respuestaTextBox.Text = guardarRespuestas[Indice];
+            if(respuestaTextBox.Text.Equals(peliculasAleatorias[Indice].Nombre, StringComparison.CurrentCultureIgnoreCase))
+            {
+                respuestaTextBox.Background = Brushes.Green;
+                respuestaTextBox.Foreground = Brushes.White;
+                respuestaTextBox.IsReadOnly = true;
+                validarButton.IsEnabled = false;
+                pistaCheckBox.IsEnabled = false;
+            }
+            else
+            {
+                respuestaTextBox.Background = Brushes.White;
+                respuestaTextBox.Foreground = Brushes.Black;
+                respuestaTextBox.IsReadOnly = false;
+                validarButton.IsEnabled = true;
+                pistaCheckBox.IsEnabled = true;
+            }
         }
     }
 }
